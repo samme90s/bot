@@ -15,6 +15,7 @@ for var, value in VARS.items():
         raise Exception(f"{var} not found in .env")
 
 PREFIX: Final[str] = "!"
+PREFIX_DM: Final[str] = "dm"
 
 DISCORD_SECRET: Final[str] = VARS["discord_secret"]
 NGROK_SECRET: Final[str] = VARS["ngrok_secret"]
