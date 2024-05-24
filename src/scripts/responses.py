@@ -4,8 +4,8 @@ from typing import Dict, List
 from scripts.api import get_endpoints
 
 COMMANDS: Dict[str, str] = {
-    "help": "Display a list of commands.",
-    "serv": "Displays a list of running endpoints/servers."
+    "help": "List commands.",
+    "serv": "List running endpoints/servers."
 }
 
 
