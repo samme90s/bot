@@ -1,8 +1,15 @@
+import logging
 
 from discord import Client, Intents, Message
 
 from scripts.config import DISCORD_SECRET, PREFIX
 from scripts.responses import get_responses
+
+# LOG SETUP
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s\t%(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S')
 
 # BOT SETUP
 intents: Intents = Intents.default()
@@ -12,7 +19,7 @@ client: Client = Client(intents=intents)
 
 async def send_message(message: Message, user_message: str) -> None:
     if not user_message:
-        print("Message was empty because intents were not enabled properly.")
+        logging.warning("Message was empty because intents were not enabled properly.")
         return
 
     if is_private := user_message[0] == "?":
@@ -22,13 +29,13 @@ async def send_message(message: Message, user_message: str) -> None:
         response: str = get_responses(user_message)
         await message.author.send(response) if is_private else await message.channel.send(response)
     except Exception as e:
-        print(e)
+        logging.error(e)
 
 
 # STARTUP
 @client.event
 async def on_ready() -> None:
-    print(f"{client.user} is now running")
+    logging.info(f"{client.user} is now running")
 
 
 # MESSAGE HANDLING
@@ -44,7 +51,7 @@ async def on_message(message: Message) -> None:
     user_message: str = message.content[len(PREFIX):]
     channel: str = str(message.channel)
 
-    print(f"<{channel}> {username}: {user_message}")
+    logging.info(f"<{channel}> {username}: {user_message}")
     await send_message(message, user_message)
 
 
