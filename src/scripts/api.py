@@ -25,7 +25,3 @@ def get_endpoints() -> Dict[str, str]:
         selected_data[endpoint["proto"]] = endpoint["hostport"]
 
     return selected_data
-
-
-if __name__ == "__main__":
-    print(get_endpoints())
