@@ -1,0 +1,7 @@
+services:
+  cortana:
+    container_name: cortana
+    image: cortana
+    tty: true
+    stdin_open: true
+    restart: unless-stopped
