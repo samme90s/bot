@@ -20,3 +20,7 @@ Do not commit this file.
 ```conf
 DISCORD_TOKEN = ""
 ```
+
+## Useful links
+
+- [ngrok->api-endpoints](https://ngrok.com/docs/api/resources/endpoints/)
