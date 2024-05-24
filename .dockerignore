@@ -1,0 +1,10 @@
+# Workflows
+.github/
+
+# Development tools
+.vscode/
+.flake8
+.gitignore
+.gitmodules
+.requirements.txt
+*.md
