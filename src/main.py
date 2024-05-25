@@ -12,9 +12,9 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S")
 
 # BOT SETUP
-intents: Intents = Intents.default()
+intents = Intents.default()
 intents.message_content = True
-client: Client = Client(intents=intents)
+client = Client(intents=intents)
 
 
 # STARTUP
@@ -26,29 +26,34 @@ async def on_ready() -> None:
 # MESSAGE HANDLING
 @client.event
 async def on_message(message: Message) -> None:
+    if not message.content:
+        logging.warning("Intent was not set up correctly")
+        return
+
     if not message.content.startswith(PREFIX):
         return
 
     if message.author == client.user:
         return
 
-    username: str = str(message.author)
-    user_message: str = message.content.strip()[len(PREFIX):]
-    channel: str = str(message.channel)
+    channel = str(message.channel)
+    username = str(message.author)
+    # Remove the prefix from the message
+    message.content = message.content.strip()[len(PREFIX):]
+    logging.info(f"<{channel}> {username}: {message.content}")
 
-    logging.info(f"<{channel}> {username}: {user_message}")
-    await send_message(message, user_message)
+    await send_message(message)
 
 
-async def send_message(message: Message, user_message: str) -> None:
-    if not user_message:
-        logging.warning("Message was empty because intents were not enabled properly.")
-        return
+async def send_message(message: Message) -> None:
+    user_message = message.content.lower()
 
-    if is_dm := user_message.lower().startswith(PREFIX_DM):
+    if is_dm := message.content.startswith(PREFIX_DM):
+        # Remove the second prefix from the message
         user_message = user_message[len(PREFIX_DM):]
+
     try:
-        response: str = get_responses(user_message)
+        response = get_responses(user_message)
         await message.author.send(response) if is_dm else await message.channel.send(response)
     except Forbidden as e:
         await message.channel.send(f"{message.author.mention} please enable direct messages from server members.")
