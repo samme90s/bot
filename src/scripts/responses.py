@@ -1,8 +1,8 @@
 from enum import Enum
-from random import choice
 from typing import Dict, List
 
 from scripts.api import get_endpoints
+from scripts.config import PREFIX
 
 
 class Commands(Enum):
@@ -10,65 +10,66 @@ class Commands(Enum):
     SERV = "serv"
 
 
-COMMANDS: Dict[Commands, str] = {
-    Commands.HELP.value: "List commands.",
-    Commands.SERV.value: "List running endpoints/servers."
-}
-
-COMMAND_FUNCTIONS = {
-    Commands.HELP.value: lambda: format_help_message(COMMANDS),
-    Commands.SERV.value: lambda: format_endpoints_message(get_endpoints()),
+COMMAND_FUNCTIONS: Dict[str, callable] = {
+    Commands.HELP.value: lambda: get_help_response(),
+    Commands.SERV.value: lambda: get_endpoints_response(),
 }
 
 
-def get_responses(user_input: str) -> str:
-    lower: str = user_input.lower()
+def get_response(user_input: str) -> str:
+    user_input: str = user_input.lower()
 
-    if lower == "":
-        return get_empty_response()
-    elif lower in COMMAND_FUNCTIONS:
-        return COMMAND_FUNCTIONS[lower]()
+    if user_input == "":
+        return get_missing_response()
+    elif user_input in COMMAND_FUNCTIONS:
+        return COMMAND_FUNCTIONS[user_input]()
     else:
         return get_general_response()
 
 
-def format_help_message(commands: Dict[Commands, str]) -> str:
-    return concatenate_with_newline([
-        get_heading("books", "Help"),
-        "Use **!dm**\\{command\\} for direct message.",
-        get_as_md({command: description for command, description in commands.items()})])
+def get_help_response() -> str:
+    response: str = ""
+    response += insert_section("books", "Help")
+    response += insert_newline("Use **!dm**\\{command\\} for direct message.")
+    response += insert_heading("tools", "Commands")
+    response += insert_newline(f"**{PREFIX}{Commands.HELP.value}**: Show this.")
+    response += insert_newline(f"**{PREFIX}{Commands.SERV.value}**: Show endpoints/servers.")
+    return response.strip()
 
 
-def format_endpoints_message(endpoints: list) -> str:
-    return concatenate_with_newline([
-        get_heading("satellite", "Endpoints/Servers"),
-        get_as_md(endpoints)])
+def get_endpoints_response() -> str:
+    endpoints = get_endpoints()
+    response: str = ""
+    response += insert_section("satellite", "Endpoints/Servers")
+    response += insert_error("No endpoints found.") if not endpoints else insert_list(endpoints)
+    return response.strip()
 
 
-def get_as_md(items: List | Dict) -> str:
-    if isinstance(items, Dict):
-        items = format_dict_to_list(items)
-    return f"```ruby\n{"\n".join(items)}```"
+def insert_section(emoji: str, title: str) -> str:
+    return f":{emoji}: **{title}**\n"
 
 
-def format_dict_to_list(items: Dict[str, str]) -> List[str]:
-    return [f"{key}: {value}" for key, value in items.items()]
+def insert_heading(emoji: str, title: str) -> str:
+    return f"\n:{emoji}: **{title}**\n"
 
 
-def get_heading(emoji: str, title: str) -> str:
-    return f":{emoji}: **{title}**"
+def insert_newline(content: str | List = None) -> str:
+    if isinstance(content, list):
+        return "".join(f"{lst_str}\n" for lst_str in content)
+    return f"{content}\n"
 
 
-def concatenate_with_newline(strings: List[str]) -> str:
-    return "\n".join(strings)
+def insert_list(lst: List[str]) -> str:
+    return "".join(f"`{item}`\n" for item in lst)
 
 
-def get_empty_response() -> str:
-    return choice(["Try saying something...",
-                   "Prompt me with a command..."])
+def insert_error(content: str) -> str:
+    return f":robot: {content}\n"
+
+
+def get_missing_response() -> str:
+    return f"Prompt me with an existing command... for more information use **{PREFIX}{Commands.HELP.value}**."
 
 
 def get_general_response() -> str:
-    return choice(["I do not understand...",
-                   "I have not learned that yet...",
-                   "Not sure what you mean by that..."])
+    return "I do not understand..."

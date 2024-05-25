@@ -7,8 +7,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 VARS = MappingProxyType({
-    "discord_secret": os.getenv("discord_secret"),
-    "ngrok_secret": os.getenv("ngrok_secret")})
+    "DISC_APP_KEY": os.getenv("DISC_APP_KEY"),
+    "NGROK_API_KEY": os.getenv("NGROK_API_KEY")})
 
 for var, value in VARS.items():
     if value is None:
@@ -17,5 +17,5 @@ for var, value in VARS.items():
 PREFIX: Final[str] = "!"
 PREFIX_DM: Final[str] = "dm"
 
-DISCORD_SECRET: Final[str] = VARS["discord_secret"]
-NGROK_SECRET: Final[str] = VARS["ngrok_secret"]
+DISC_APP_KEY: Final[str] = VARS["DISC_APP_KEY"]
+NGROK_API_KEY: Final[str] = VARS["NGROK_API_KEY"]

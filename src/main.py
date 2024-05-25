@@ -2,8 +2,8 @@ import logging
 
 from discord import Client, Forbidden, Intents, Message
 
-from scripts.config import DISCORD_SECRET, PREFIX, PREFIX_DM
-from scripts.responses import get_responses
+from scripts.config import DISC_APP_KEY, PREFIX, PREFIX_DM
+from scripts.responses import get_response
 
 # LOG SETUP
 logging.basicConfig(
@@ -39,21 +39,19 @@ async def on_message(message: Message) -> None:
     channel = str(message.channel)
     username = str(message.author)
     # Remove the prefix from the message
-    message.content = message.content.strip()[len(PREFIX):]
+    message.content = message.content.strip().lower()[len(PREFIX):]
     logging.info(f"<{channel}> {username}: {message.content}")
 
     await send_message(message)
 
 
 async def send_message(message: Message) -> None:
-    user_message = message.content.lower()
-
     if is_dm := message.content.startswith(PREFIX_DM):
         # Remove the second prefix from the message
-        user_message = user_message[len(PREFIX_DM):]
+        message.content = message.content[len(PREFIX_DM):]
 
     try:
-        response = get_responses(user_message)
+        response = get_response(message.content)
         await message.author.send(response) if is_dm else await message.channel.send(response)
     except Forbidden as e:
         await message.channel.send(f"{message.author.mention} please enable direct messages from server members.")
@@ -63,7 +61,7 @@ async def send_message(message: Message) -> None:
 
 
 def main() -> None:
-    client.run(DISCORD_SECRET)
+    client.run(DISC_APP_KEY)
 
 
 if __name__ == "__main__":
