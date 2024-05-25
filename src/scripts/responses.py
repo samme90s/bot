@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Dict, List
 
-from scripts.api import get_endpoints
+from scripts.ngrok import get_endpoints
 from scripts.config import PREFIX
 
 
@@ -19,9 +19,7 @@ COMMAND_FUNCTIONS: Dict[str, callable] = {
 def get_response(user_input: str) -> str:
     user_input: str = user_input.lower()
 
-    if user_input == "":
-        return get_missing_response()
-    elif user_input in COMMAND_FUNCTIONS:
+    if user_input in COMMAND_FUNCTIONS:
         return COMMAND_FUNCTIONS[user_input]()
     else:
         return get_general_response()
@@ -67,9 +65,5 @@ def insert_error(content: str) -> str:
     return f":robot: {content}\n"
 
 
-def get_missing_response() -> str:
-    return f"Prompt me with an existing command... for more information use **{PREFIX}{Commands.HELP.value}**."
-
-
 def get_general_response() -> str:
-    return "I do not understand..."
+    return "I do not understand... try **{PREFIX}{Commands.HELP.value}**."

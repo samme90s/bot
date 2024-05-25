@@ -1,6 +1,5 @@
 import os
 from types import MappingProxyType
-from typing import Final
 
 from dotenv import load_dotenv
 
@@ -14,8 +13,8 @@ for var, value in VARS.items():
     if value is None:
         raise Exception(f"{var} not found in .env")
 
-PREFIX: Final[str] = "!"
-PREFIX_DM: Final[str] = "dm"
+PREFIX: str = "!"
+PREFIX_DM: str = "dm"
 
-DISC_APP_KEY: Final[str] = VARS["DISC_APP_KEY"]
-NGROK_API_KEY: Final[str] = VARS["NGROK_API_KEY"]
+DISC_APP_KEY: str = VARS["DISC_APP_KEY"]
+NGROK_API_KEY: str = VARS["NGROK_API_KEY"]
