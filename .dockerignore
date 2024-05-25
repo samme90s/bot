@@ -15,9 +15,6 @@ dist/
 # Lint tools
 .flake8
 
-# Local environment files
-.env
-
 # Dependencies
 .requirements.txt
 
