@@ -38,26 +38,36 @@ async def on_message(message: Message) -> None:
 
     channel = str(message.channel)
     username = str(message.author)
-    # Remove the prefix from the message
-    message.content = message.content.strip().lower()[len(PREFIX):]
     logging.info(f"<{channel}> {username}: {message.content}")
 
-    await send_message(message)
-
-
-async def send_message(message: Message) -> None:
-    if is_dm := message.content.startswith(PREFIX_DM):
-        # Remove the second prefix from the message
+    # Strip prefix.
+    message.content = message.content.strip().lower()[len(PREFIX):]
+    # Strip dm prefix.
+    if dm := message.content.startswith(PREFIX_DM):
         message.content = message.content[len(PREFIX_DM):]
 
     try:
+        await send_message(message, dm)
+        await del_message(message)
+    except Exception as e:
+        logging.error(e)
+
+
+async def send_message(message: Message, dm: bool) -> None:
+    try:
         response = get_response(message.content)
-        await message.author.send(response) if is_dm else await message.channel.send(response)
+        await message.author.send(response) if dm else await message.channel.send(response)
     except Forbidden as e:
         await message.channel.send(f"{message.author.mention} please enable direct messages from server members.")
         logging.info(e)
-    except Exception as e:
-        logging.error(e)
+
+
+async def del_message(message: Message) -> None:
+    try:
+        await message.delete()
+    except Forbidden as e:
+        logging.info(e)
+        await message.channel.send(f"{client.user.mention} missing permission to delete in {message.channel.mention}.")
 
 
 def main() -> None:

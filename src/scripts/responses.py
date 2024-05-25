@@ -58,7 +58,7 @@ def insert_newline(content: str | List = None) -> str:
 
 
 def insert_list(lst: List[str]) -> str:
-    return "".join(f"`{item}`\n" for item in lst)
+    return "".join(f"{i+1}. {item}\n" for i, item in enumerate(lst))
 
 
 def insert_error(content: str) -> str:
@@ -66,4 +66,4 @@ def insert_error(content: str) -> str:
 
 
 def get_general_response() -> str:
-    return "I do not understand... try **{PREFIX}{Commands.HELP.value}**."
+    return f"I do not understand... try **{PREFIX}{Commands.HELP.value}**."
