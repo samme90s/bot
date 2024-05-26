@@ -57,7 +57,7 @@ jobs:
       - name: "📦 Docker Buildx"
         uses: docker/setup-buildx-action@v3.3.0
 
-      - name: "🚀 Docker build and push image to hub"
+      - name: "🚀 Docker build and push image to Docker Hub"
         uses: docker/build-push-action@v5.3.0
         with:
           # Specify root location

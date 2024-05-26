@@ -18,7 +18,8 @@ Create a `.env` file with the following content.
 Do not commit this file.
 
 ```conf
-DISCORD_TOKEN = ""
+DISC_APP_KEY  = ""
+NGROK_API_KEY = ""
 ```
 
 ## Useful links
