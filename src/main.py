@@ -8,7 +8,7 @@ from scripts.responses import get_response
 # LOG SETUP
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s %(levelname)s\t%(message)s",
+    format="%(asctime)s %(levelname)s %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S")
 
 # BOT SETUP
