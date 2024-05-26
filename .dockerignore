@@ -3,6 +3,9 @@ __pycache__/
 build/
 dist/
 
+# Environment variables
+.env
+
 # Version control directories and files
 .github/
 .git/
