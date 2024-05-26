@@ -19,7 +19,8 @@ NGROK_API_KEY = ""
 Run using:
 
 ```bash
-docker compose -f docker-compose.yml up -d --force-recreate
+# This ensures that the latest images are pulled and the containers are recreated.
+docker-compose pull && docker-compose -f docker-compose.yml up -d --force-recreate
 ```
 
 ## Development
