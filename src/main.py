@@ -1,6 +1,6 @@
 import logging
 
-from discord import Client, Forbidden, Intents, Message
+from discord import Client, DMChannel, Forbidden, Intents, Message
 
 from scripts.config import DISC_APP_KEY, PREFIX, PREFIX_DM
 from scripts.responses import get_response
@@ -36,9 +36,10 @@ async def on_message(message: Message) -> None:
     if message.author == client.user:
         return
 
-    channel = str(message.channel)
-    username = str(message.author)
-    logging.info(f"<{channel}> {username}: {message.content}")
+    if not isinstance(message.channel, DMChannel):
+        logging.info(f"<{PREFIX_DM}> {str(message.author)}: {message.content}")
+    else:
+        logging.info(f"<{str(message.channel)}> {str(message.author)}: {message.content}")
 
     # Strip prefix.
     message.content = message.content.strip().lower()[len(PREFIX):]
@@ -56,6 +57,8 @@ async def on_message(message: Message) -> None:
 async def send_message(message: Message, dm: bool) -> None:
     try:
         response = get_response(message.content)
+        # If the message came from a `DMChannel` then the message.channel will
+        # automatically be a `DMChannel`.
         await message.author.send(response) if dm else await message.channel.send(response)
     except Forbidden as e:
         await message.channel.send(f"{message.author.mention} please enable direct messages from server members.")
@@ -64,7 +67,10 @@ async def send_message(message: Message, dm: bool) -> None:
 
 async def del_message(message: Message) -> None:
     try:
-        await message.delete()
+        # Check if the message came from a `DMChannel` due to missing
+        # permissions of removal of dm messages.
+        if not isinstance(message.channel, DMChannel):
+            await message.delete()
     except Forbidden as e:
         logging.info(e)
         await message.channel.send(f"{client.user.mention} missing permission to delete in {message.channel.mention}.")
