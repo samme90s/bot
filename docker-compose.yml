@@ -2,6 +2,8 @@ services:
   cortana:
     container_name: cortana
     image: samme90s/cortana:latest
+    env_file:
+      - ./.env
     tty: true
     stdin_open: true
     restart: unless-stopped
