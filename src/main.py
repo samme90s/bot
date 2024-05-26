@@ -36,7 +36,7 @@ async def on_message(message: Message) -> None:
     if message.author == client.user:
         return
 
-    if not isinstance(message.channel, DMChannel):
+    if isinstance(message.channel, DMChannel):
         logging.info(f"<{PREFIX_DM}> {str(message.author)}: {message.content}")
     else:
         logging.info(f"<{str(message.channel)}> {str(message.author)}: {message.content}")
