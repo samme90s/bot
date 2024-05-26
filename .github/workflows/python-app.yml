@@ -12,8 +12,10 @@ name: Python application pipeline
 on:
   push:
     branches: ["main"]
-  pull_request:
-    branches: ["main"]
+    paths:
+      - "src/**"
+      - "Dockerfile"
+      - "requirements.txt"
 
 permissions:
   contents: read
