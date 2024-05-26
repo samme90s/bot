@@ -1,12 +1,10 @@
-# Workflows
-.github/
-
 # Build artifacts
 __pycache__/
 build/
 dist/
 
 # Version control directories and files
+.github/
 .git/
 .gitignore
 .gitmodules
