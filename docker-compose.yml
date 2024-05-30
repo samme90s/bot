@@ -1,7 +1,7 @@
 services:
-  cortana:
-    container_name: cortana
-    image: samme90s/cortana:latest
+  raspi:
+    container_name: raspi
+    image: samme90s/raspi:latest
     env_file:
       - ./.env
     tty: true

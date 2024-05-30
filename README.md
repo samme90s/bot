@@ -1,8 +1,8 @@
-# Cortana
+# Raspi
 
 ## Usage
 
-This section explains how to interact with Cortana.
+This section explains how to interact with Raspi.
 
 **IMPORTANT** -- All files and bash commands are executed from the root directory of the project.
 
