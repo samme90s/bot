@@ -16,6 +16,8 @@ NGROK_API_KEY = ""
 
 ### Docker
 
+**IMPORTANT** -- Make sure the `.env` is located in the same directory as the `docker-compose.yml` file.
+
 Run using:
 
 ```bash
