@@ -20,7 +20,7 @@ Run using:
 
 ```bash
 # This ensures that the latest images are pulled and the containers are recreated.
-docker-compose pull && docker-compose -f docker-compose.yml up -d --force-recreate
+docker compose pull && docker compose -f docker-compose.yml up -d --force-recreate
 ```
 
 ## Development
