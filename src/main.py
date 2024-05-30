@@ -36,7 +36,7 @@ async def on_message(message: Message) -> None:
         return
 
     # Ignore messages that is not intended.
-    if not message.content.startswith(PREFIX):
+    if not is_dm(message) and not has_prefix(message):
         return
 
     # Prevent bot from responding to itself.
@@ -54,15 +54,26 @@ async def on_message(message: Message) -> None:
         await message.channel.send(f"{client.user.mention} is experiencing some issues.")
 
 
+def is_dm(message: Message) -> bool:
+    return isinstance(message.channel, DMChannel)
+
+
+def has_prefix(message: Message) -> bool:
+    return message.content.startswith(PREFIX)
+
+
 def log_message(message: Message) -> None:
-    if isinstance(message.channel, DMChannel):
-        logging.info(f"👻{str(message.author)}: {message.content}")
+    if is_dm(message):
+        logging.info(f"dm:{str(message.author)}: {message.content}")
     else:
-        logging.info(f"<{str(message.channel)}> {str(message.author)}: {message.content}")
+        logging.info(f"ch:{str(message.channel)}:{str(message.author)}: {message.content}")
 
 
 def clean_message(message: Message) -> str:
-    return message.content.strip().lower()[len(PREFIX):]
+    message.content = message.content.strip().lower()
+    if has_prefix(message):
+        message.content = message.content[len(PREFIX):]
+    return message.content
 
 
 async def send_message(message: Message) -> None:
