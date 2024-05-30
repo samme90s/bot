@@ -9,17 +9,11 @@ class Command:
     def __init__(self, name: str, description: str, func=None):
         self.name = name
         self.description = description
-        self.func = func
-
-    def get_name(self) -> str:
-        return self.name
-
-    def get_description(self) -> str:
-        return self.description
+        self.__func = func
 
     def execute(self) -> None:
-        if self.func:
-            self.func()
+        if self.__func:
+            return self.__func()
 
 
 class Commands(Enum):
@@ -37,7 +31,7 @@ def get_response(user_input: str) -> str:
     user_input: str = user_input.lower()
 
     for command in Commands:
-        if user_input == command.value.get_name():
+        if user_input == command.value.name:
             return command.value.execute()
 
     return get_general_response()
@@ -78,4 +72,4 @@ def insert_error(content: str) -> str:
 
 
 def get_general_response() -> str:
-    return f"I do not understand... try **{PREFIX}{Commands.HELP.value}**."
+    return f"I do not understand... try **{PREFIX}{Commands.HELP.value.name}**."

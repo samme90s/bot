@@ -51,6 +51,7 @@ async def on_message(message: Message) -> None:
         await del_message(message)
     except Exception as e:
         logging.error(e)
+        await message.channel.send(f"{client.user.mention} is experiencing some issues.")
 
 
 def log_message(message: Message) -> None:
