@@ -2,7 +2,7 @@ import logging
 
 from discord import Client, DMChannel, Forbidden, Intents, Message
 
-from scripts.config import DISC_APP_KEY, PREFIX, PREFIX_DM
+from scripts.config import DISC_APP_KEY, PREFIX
 from scripts.responses import get_response
 
 # LOG SETUP
@@ -17,58 +17,64 @@ intents.message_content = True
 client = Client(intents=intents)
 
 
-# STARTUP
 @client.event
 async def on_ready() -> None:
+    '''
+    This event is called when the bot is ready to start being used.
+    '''
     logging.info(f"{client.user} is now running")
 
 
 # MESSAGE HANDLING
 @client.event
 async def on_message(message: Message) -> None:
+    '''
+    This event is called when a message is sent.
+    '''
     if not message.content:
         logging.warning("Intent was not set up correctly")
         return
 
+    # Ignore messages that is not intended.
     if not message.content.startswith(PREFIX):
         return
 
+    # Prevent bot from responding to itself.
     if message.author == client.user:
         return
 
-    if isinstance(message.channel, DMChannel):
-        logging.info(f"<{PREFIX_DM}> {str(message.author)}: {message.content}")
-    else:
-        logging.info(f"<{str(message.channel)}> {str(message.author)}: {message.content}")
-
-    # Strip prefix.
-    message.content = message.content.strip().lower()[len(PREFIX):]
-    # Strip dm prefix.
-    if dm := message.content.startswith(PREFIX_DM):
-        message.content = message.content[len(PREFIX_DM):]
-
     try:
-        await send_message(message, dm)
+        log_message(message)
+        message.content = clean_message(message)
+
+        await send_message(message)
         await del_message(message)
     except Exception as e:
         logging.error(e)
 
 
-async def send_message(message: Message, dm: bool) -> None:
+def log_message(message: Message) -> None:
+    if isinstance(message.channel, DMChannel):
+        logging.info(f"👻{str(message.author)}: {message.content}")
+    else:
+        logging.info(f"<{str(message.channel)}> {str(message.author)}: {message.content}")
+
+
+def clean_message(message: Message) -> str:
+    return message.content.strip().lower()[len(PREFIX):]
+
+
+async def send_message(message: Message) -> None:
     try:
-        response = get_response(message.content)
-        # If the message came from a `DMChannel` then the message.channel will
-        # automatically be a `DMChannel`.
-        await message.author.send(response) if dm else await message.channel.send(response)
+        await message.channel.send(get_response(message.content))
     except Forbidden as e:
-        await message.channel.send(f"{message.author.mention} please enable direct messages from server members.")
         logging.info(e)
+        await message.channel.send(f"{message.author.mention} please enable direct messages from server members.")
 
 
 async def del_message(message: Message) -> None:
     try:
-        # Check if the message came from a `DMChannel` due to missing
-        # permissions of removal of dm messages.
+        # Verify the source due to permission limitations.
         if not isinstance(message.channel, DMChannel):
             await message.delete()
     except Forbidden as e:

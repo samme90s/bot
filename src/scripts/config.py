@@ -14,7 +14,6 @@ for var, value in VARS.items():
         raise Exception(f"{var} not found in .env")
 
 PREFIX: str = "!"
-PREFIX_DM: str = "dm"
 
 DISC_APP_KEY: str = VARS["DISC_APP_KEY"]
 NGROK_API_KEY: str = VARS["NGROK_API_KEY"]

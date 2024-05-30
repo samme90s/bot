@@ -1,37 +1,53 @@
 from enum import Enum
-from typing import Dict, List
+from typing import List
 
 from scripts.config import PREFIX
 from scripts.ngrok import get_endpoints
 
 
+class Command:
+    def __init__(self, name: str, description: str, func=None):
+        self.name = name
+        self.description = description
+        self.func = func
+
+    def get_name(self) -> str:
+        return self.name
+
+    def get_description(self) -> str:
+        return self.description
+
+    def execute(self) -> None:
+        if self.func:
+            self.func()
+
+
 class Commands(Enum):
-    HELP = "help"
-    SERV = "serv"
-
-
-COMMAND_FUNCTIONS: Dict[str, callable] = {
-    Commands.HELP.value: lambda: get_help_response(),
-    Commands.SERV.value: lambda: get_endpoints_response(),
-}
+    HELP = Command(
+        "help",
+        "Show instructions on how to use this bot.",
+        lambda: get_help_response())
+    SERV = Command(
+        "serv",
+        "Show endpoints/servers.",
+        lambda: get_endpoints_response())
 
 
 def get_response(user_input: str) -> str:
     user_input: str = user_input.lower()
 
-    if user_input in COMMAND_FUNCTIONS:
-        return COMMAND_FUNCTIONS[user_input]()
-    else:
-        return get_general_response()
+    for command in Commands:
+        if user_input == command.value.get_name():
+            return command.value.execute()
+
+    return get_general_response()
 
 
 def get_help_response() -> str:
     response: str = ""
     response += insert_heading("books", "Help")
-    response += insert_newline("Use **!dm**\\{command\\} for direct message.")
-    response += insert_heading("tools", "Commands")
-    response += insert_newline(f"**{PREFIX}{Commands.HELP.value}**: Show this.")
-    response += insert_newline(f"**{PREFIX}{Commands.SERV.value}**: Show endpoints/servers.")
+    response += insert_newline(f"**{PREFIX}{Commands.HELP.value.name}**: {Commands.HELP.value.description}")
+    response += insert_newline(f"**{PREFIX}{Commands.SERV.value.name}**: {Commands.SERV.value.description}")
     return response.strip()
 
 
