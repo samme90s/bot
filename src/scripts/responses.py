@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import List
 
 from scripts.config import PREFIX
 from scripts.ngrok import get_endpoints
@@ -57,14 +56,14 @@ def insert_heading(emoji: str, title: str) -> str:
     return f"\n:{emoji}: **{title}**\n"
 
 
-def insert_newline(content: str | List = None) -> str:
+def insert_newline(content: str | list = None) -> str:
     if isinstance(content, list):
         return "".join(f"{lst_str}\n" for lst_str in content)
     return f"{content}\n"
 
 
-def insert_list(lst: List[str]) -> str:
-    return "".join(f"{i+1}. {item}\n" for i, item in enumerate(lst))
+def insert_list(lst: list[str]) -> str:
+    return "".join(f"**{i}.** {item}\n" for i, item in enumerate(lst, start=1))
 
 
 def insert_error(content: str) -> str:

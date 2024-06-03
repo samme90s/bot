@@ -1,5 +1,3 @@
-from typing import List
-
 from requests import get
 
 from scripts.config import NGROK_API_KEY
@@ -11,7 +9,7 @@ HEADERS: dict = {
 }
 
 
-def get_endpoints() -> List[str]:
+def get_endpoints() -> list[str]:
     response = get(url=f"{URL}/endpoints", headers=HEADERS)
 
     if not response.ok:
