@@ -1,3 +1,6 @@
+# See the official documentation for more information:
+# https://ngrok.com/docs/api/
+
 from requests import get
 
 from scripts.config import NGROK_API_KEY

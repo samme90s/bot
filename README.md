@@ -1,15 +1,31 @@
 # Raspi
 
+## Development
+
+Run using:
+
+```bash
+pip install -r requirements.txt &&
+python ./src/main.py
+```
+
 ## Usage
 
-This section explains how to interact with Raspi.
+**IMPORTANT** -- All commands are executed from the root directory of the project.
 
-**IMPORTANT** -- All files and bash commands are executed from the root directory of the project.
+```bash
+touch .env
+```
 
-Create a `.env` file with the following content.
-Do not commit this file.
+Copy the following content into the file and update the values with correct credentials:
 
 ```conf
+# .env
+#
+# ******************** IMPORTANT! ********************
+# *** This file should never be version controlled ***
+# ****************************************************
+
 DISC_APP_KEY  = ""
 NGROK_API_KEY = ""
 ```
@@ -26,21 +42,3 @@ sudo docker compose pull &&
 sudo docker compose -f docker-compose.yml up -d --force-recreate &&
 sudo docker system prune -a --volumes -f
 ```
-
-## Development
-
-This will install all the required dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-Run using:
-
-```bash
-python ./src/main.py
-```
-
-## Useful links
-
-- [ngrok->api-endpoints](https://ngrok.com/docs/api/resources/endpoints/)
